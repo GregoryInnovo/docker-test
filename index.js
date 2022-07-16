@@ -17,6 +17,7 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const domain = process.env.DOMAIN;
 
+// the domain is the name of the container
 const mongoUri = `mongodb://${user}:${password}@${domain}:27017/myapp?authSource=admin`;
 
 mongoose.connect(mongoUri);
