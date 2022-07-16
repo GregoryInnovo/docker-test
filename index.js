@@ -1,37 +1,55 @@
 const express = require("express");
-const mongoose = require("mongoose");
+const axios = require("axios");
 require("dotenv").config();
-
-const Console = mongoose.model(
-  "Console",
-  new mongoose.Schema({
-    name: String,
-    price: Number,
-  })
-);
 
 const app = express();
 const port = process.env.PORT || 3000;
 // db connection
-const user = process.env.DB_USER;
-const password = process.env.DB_PASSWORD;
 const domain = process.env.DOMAIN;
+// middleware!
+app.use(express.json());
 
-// the domain is the name of the container
-const mongoUri = `mongodb://${user}:${password}@${domain}:27017/myapp?authSource=admin`;
-
-mongoose.connect(mongoUri);
-
-app.get("/", async (req, res) => {
-  const consoles = await Console.find();
-  return res.json(consoles);
+app.get("/users", async (req, res) => {
+  try {
+    await axios
+      .get(`${domain}/users`)
+      .then((response) => {
+        return res.status(200).json(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.json({ message: "failed!" });
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error", TypeError: error });
+  }
 });
 
-app.get("/create", async (req, res) => {
-  await Console.create({ name: "Nintendo Switch", price: 299.99 });
-  return res.json({ message: "Console created" });
+app.post("/users", async (req, res) => {
+  try {
+    console.log("Request info: ", req.body);
+    const body = {
+      id: req.body.id,
+      name: req.body.name,
+    };
+
+    await axios
+      .post(`${domain}/users`, body)
+      .then((response) => {
+        console.log(response.data);
+        return res.status(201).json({ message: "user created" });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.json({ message: "failed!" });
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error", TypeError: error });
+  }
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
