@@ -23,7 +23,7 @@ const mongoUri = `mongodb://${user}:${password}@${domain}:27017/myapp?authSource
 mongoose.connect(mongoUri);
 
 app.get("/", async (req, res) => {
-  console.log("listening...");
+  console.log("listening... data...");
   const consoles = await Console.find();
   return res.json(consoles);
 });

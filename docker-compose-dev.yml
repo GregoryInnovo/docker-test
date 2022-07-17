@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  appback:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    links:
+      - monguito
+    volumes:
+      - .:/home/app
+    environment:
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DOMAIN=monguito
+  monguito:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - mongo-data:/data/db
+      # mysql -> /var/lib/mysql
+      # postgres -> var/lib/postgresql/data
+
+volumes:
+  mongo-data:
