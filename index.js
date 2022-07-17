@@ -23,11 +23,13 @@ const mongoUri = `mongodb://${user}:${password}@${domain}:27017/myapp?authSource
 mongoose.connect(mongoUri);
 
 app.get("/", async (req, res) => {
+  console.log("listening...");
   const consoles = await Console.find();
   return res.json(consoles);
 });
 
 app.get("/create", async (req, res) => {
+  console.log("creating...");
   await Console.create({ name: "Nintendo Switch", price: 299.99 });
   return res.json({ message: "Console created" });
 });
